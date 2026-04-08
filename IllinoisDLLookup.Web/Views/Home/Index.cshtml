@@ -1,0 +1,122 @@
+@model IllinoisDLLookup.Web.Models.LicenseLookupViewModel
+
+@{
+    ViewBag.Title = "Illinois Driver's License Lookup";
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    <span class="glyphicon glyphicon-search"></span>
+                    Illinois Driver's License Lookup
+                </h2>
+            </div>
+            <div class="panel-body">
+                <p class="text-muted">
+                    Enter an Illinois driver's license number below to validate its format.
+                    Illinois driver's license numbers consist of one letter followed by eleven digits
+                    (12 characters total).
+                </p>
+
+                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group @(Html.ViewData.ModelState["LicenseNumber"] != null && Html.ViewData.ModelState["LicenseNumber"].Errors.Count > 0 ? "has-error" : "")">
+                        @Html.LabelFor(m => m.LicenseNumber, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.LicenseNumber, new
+                            {
+                                @class = "form-control input-lg",
+                                placeholder = "e.g. S12345678901",
+                                autofocus = "autofocus",
+                                maxlength = "12",
+                                style = "text-transform:uppercase; letter-spacing:2px; font-family:monospace;"
+                            })
+                            @Html.ValidationMessageFor(m => m.LicenseNumber, "", new { @class = "help-block" })
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                <span class="glyphicon glyphicon-search"></span> Lookup
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if (Model.Result != null)
+        {
+            <div class="panel @(Model.Result.IsValid ? "panel-success" : "panel-danger")">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        @if (Model.Result.IsValid)
+                        {
+                            <span class="glyphicon glyphicon-ok-circle"></span>
+                            <text>Valid Illinois Driver's License Format</text>
+                        }
+                        else
+                        {
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                            <text>Invalid Format</text>
+                        }
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>License Number</dt>
+                        <dd>
+                            <code class="dl-number">@Model.Result.NormalizedNumber</code>
+                        </dd>
+
+                        <dt>Status</dt>
+                        <dd>
+                            @if (Model.Result.IsValid)
+                            {
+                                <span class="label label-success">Valid Format</span>
+                            }
+                            else
+                            {
+                                <span class="label label-danger">Invalid Format</span>
+                            }
+                        </dd>
+
+                        <dt>Message</dt>
+                        <dd>@Model.Result.ValidationMessage</dd>
+
+                        @if (Model.Result.IsValid)
+                        {
+                            <dt>Last Name Initial</dt>
+                            <dd><strong>@Model.Result.LastNameInitial</strong></dd>
+                        }
+                    </dl>
+
+                    @if (Model.Result.IsValid)
+                    {
+                        <div class="alert alert-info" role="alert">
+                            <strong>Note:</strong> This tool validates the <em>format</em> of the Illinois
+                            driver's license number. It does not perform a real-time lookup against the
+                            Illinois Secretary of State database.
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">About Illinois Driver's License Numbers</h4>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li>Illinois driver's license numbers are <strong>12 characters</strong> long.</li>
+                    <li>The <strong>first character</strong> is a letter corresponding to the first letter of the holder's last name.</li>
+                    <li>The remaining <strong>11 characters</strong> are digits.</li>
+                    <li>Example format: <code>S12345678901</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
