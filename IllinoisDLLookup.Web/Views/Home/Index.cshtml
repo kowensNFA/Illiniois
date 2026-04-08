@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Illinois Driver's License Lookup";
+    var hasLicenseError = Html.ViewData.ModelState.TryGetValue(nameof(Model.LicenseNumber), out var licenseState)
+        && licenseState?.Errors.Count > 0;
 }
 
 <div class="row">
@@ -24,7 +26,7 @@
                 {
                     @Html.AntiForgeryToken()
 
-                    <div class="form-group @(Html.ViewData.ModelState["LicenseNumber"] != null && Html.ViewData.ModelState["LicenseNumber"].Errors.Count > 0 ? "has-error" : "")">
+                    <div class="form-group @(hasLicenseError ? "has-error" : "")">
                         @Html.LabelFor(m => m.LicenseNumber, new { @class = "col-sm-4 control-label" })
                         <div class="col-sm-6">
                             @Html.TextBoxFor(m => m.LicenseNumber, new
