@@ -30,6 +30,7 @@ bld/
 packages/
 *.nupkg
 *.snupkg
+.nuget/
 
 # MSTest test results
 [Tt]est[Rr]esult*/
