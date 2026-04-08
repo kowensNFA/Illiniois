@@ -1,4 +1,4 @@
-# Illiniois
+# Illinois
 
 ## Projects
 
